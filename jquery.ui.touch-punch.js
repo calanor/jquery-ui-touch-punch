@@ -1,5 +1,5 @@
 /*!
- * jQuery UI Touch Punch 1.0.9 as modified by RWAP Software
+ * jQuery UI Touch Punch 1.1.3 as modified by RWAP Software
  * based on original touchpunch v0.2.3 which has not been updated since 2014
  *
  * Updates by RWAP Software to take account of various suggested changes on the original code issues
@@ -84,23 +84,15 @@
         simulatedEvent = document.createEvent('MouseEvents');
 
     // Initialize the simulated mouse event using the touch event's coordinates
-    simulatedEvent.initMouseEvent(
-      simulatedType,    // type
-      true,             // bubbles
-      true,             // cancelable
-      window,           // view
-      1,                // detail
-      touch.screenX,    // screenX
-      touch.screenY,    // screenY
-      touch.clientX,    // clientX
-      touch.clientY,    // clientY
-      false,            // ctrlKey
-      false,            // altKey
-      false,            // shiftKey
-      false,            // metaKey
-      0,                // button
-      null              // relatedTarget
-    );
+    simulatedEvent.MouseEvent(simulatedType, {
+      bubbles: true,
+      cancelable: true,
+      view:window,
+      screenX:touch.screenX,
+      screenY:touch.screenY,
+      clientX:touch.clientX, 
+      clientY:touch.clientY
+    });
 
     // Dispatch the simulated event to the target element
     event.target.dispatchEvent(simulatedEvent);
@@ -206,6 +198,10 @@
     touchHandled = false;
   };
 
+  let _touchStartBound = mouseProto._touchStart.bind(mouseProto),
+      _touchMoveBound = mouseProto._touchMove.bind(mouseProto),
+      _touchEndBound = mouseProto._touchEnd.bind(mouseProto);
+
   /**
    * A duck punch of the $.ui.mouse _mouseInit method to support touch events.
    * This method extends the widget with bound touch event handlers that
@@ -223,9 +219,9 @@
 
     // Delegate the touch handlers to the widget's element
     self.element.on({
-      touchstart: $.proxy(self, '_touchStart'),
-      touchmove: $.proxy(self, '_touchMove'),
-      touchend: $.proxy(self, '_touchEnd')
+      touchstart: _touchStartBound,
+      touchmove: _touchMoveBound,
+      touchend: _touchEndBound
     });
 
     // Call the original $.ui.mouse init method
@@ -241,9 +237,9 @@
 
     // Delegate the touch handlers to the widget's element
     self.element.off({
-      touchstart: $.proxy(self, '_touchStart'),
-      touchmove: $.proxy(self, '_touchMove'),
-      touchend: $.proxy(self, '_touchEnd')
+      touchstart: _touchStartBound,
+      touchmove: _touchMoveBound,
+      touchend: _touchEndBound
     });
 
     // Call the original $.ui.mouse destroy method
