@@ -81,18 +81,15 @@
     }
 
     let touch = event.originalEvent.changedTouches[0],
-        simulatedEvent = document.createEvent('MouseEvents');
-
-    // Initialize the simulated mouse event using the touch event's coordinates
-    simulatedEvent.MouseEvent(simulatedType, {
-      bubbles: true,
-      cancelable: true,
-      view:window,
-      screenX:touch.screenX,
-      screenY:touch.screenY,
-      clientX:touch.clientX, 
-      clientY:touch.clientY
-    });
+        simulatedEvent = new MouseEvent(simulatedType, {
+          bubbles: true,
+          cancelable: true,
+          view:window,
+          screenX:touch.screenX,
+          screenY:touch.screenY,
+          clientX:touch.clientX,
+          clientY:touch.clientY
+        });
 
     // Dispatch the simulated event to the target element
     event.target.dispatchEvent(simulatedEvent);
